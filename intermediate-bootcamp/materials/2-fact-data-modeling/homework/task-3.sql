@@ -1,5 +1,19 @@
--- cumulative query to generate device_activity_datelist from events
--- This implements an incremental cumulative table pattern combining yesterday's data with today's new data
+-- TASK 3: Incremental cumulative query to build device_activity_datelist
+--
+-- This query implements the "yesterday + today" incremental pattern:
+-- 1. Fetches yesterday's cumulative snapshot (all historical activity up to yesterday)
+-- 2. Extracts today's new events from the events table
+-- 3. Merges them using FULL OUTER JOIN to handle:
+--    - Existing users who are active today (append today's date to their array)
+--    - Existing users who are inactive today (carry forward their existing array)
+--    - New users appearing for the first time (create new array with just today's date)
+--
+-- The CASE statement builds the cumulative array:
+--   - If no history exists: Start fresh with today's date
+--   - If user inactive today: Carry forward yesterday's array unchanged
+--   - If user active today: Prepend today's date to the existing array
+--
+-- This approach is idempotent and can be run daily to incrementally build the cumulative table
 
 INSERT INTO user_devices_cumulated
 WITH yesterday AS (SELECT *

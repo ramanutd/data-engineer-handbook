@@ -1,4 +1,15 @@
--- incremental query to generate host_activity_datelist
+-- TASK 6: Incremental query to build host_activity_datelist
+--
+-- This query implements the same "yesterday + today" pattern as task-3 but for hosts:
+-- 1. Fetches yesterday's cumulative host activity snapshot
+-- 2. Extracts today's events grouped by host (any event counts as host activity)
+-- 3. Merges using FULL OUTER JOIN to handle:
+--    - Hosts that were active today: Append today's date to their activity array
+--    - Hosts that were active yesterday but not today: Carry forward their array
+--    - New hosts appearing for the first time: Create new array with today's date
+--
+-- The query treats any user activity on a host as "host activity" for that day
+-- Runs daily to incrementally build the cumulative history of host activity patterns
 
 INSERT INTO hosts_cumulated
 WITH yesterday AS (SELECT *

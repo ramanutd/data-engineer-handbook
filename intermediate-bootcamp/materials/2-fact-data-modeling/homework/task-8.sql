@@ -1,4 +1,17 @@
--- incremental query that loads host_activity_reduced day-by-day
+-- TASK 8: Incremental query to load host_activity_reduced day-by-day
+--
+-- This query builds monthly metric arrays incrementally by appending each day's metrics:
+-- 1. Aggregates today's events: Counts total hits and unique visitors per host
+-- 2. Fetches yesterday's array from the reduced table (for the current month)
+-- 3. Appends today's metrics to the existing arrays
+--
+-- Array Building Logic:
+--   - If array exists: Append today's value (e.g., [1,2,3] becomes [1,2,3,4])
+--   - If array is NULL (first day): Create array with leading zeros for prior days
+--     Example: Day 5 starts as [0,0,0,0,5] to align with the day of month
+--
+-- ON CONFLICT: Handles reruns by updating arrays if the record already exists
+-- This enables idempotent daily runs and supports backfilling historical data
 
 INSERT INTO host_activity_reduced
 WITH daily_aggregate AS (SELECT host,
@@ -38,3 +51,7 @@ FROM daily_aggregate da
 ON CONFLICT (host, month_start, hit_metric, unique_visitors_metric)
     DO UPDATE SET hit_array             = EXCLUDED.hit_array,
                   unique_visitors_array = EXCLUDED.unique_visitors_array;
+
+
+SELECT *
+FROM host_activity_reduced;

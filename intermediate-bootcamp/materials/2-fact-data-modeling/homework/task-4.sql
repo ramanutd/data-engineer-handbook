@@ -1,5 +1,24 @@
--- datelist_int generation query.
--- Convert the device_activity_datelist column into a datelist_int column
+-- TASK 4: Convert device_activity_datelist array into compressed integer representation
+--
+-- This query converts an array of activity dates into a single integer using bit encoding:
+-- 1. Generate a series of all dates in the month (Jan 1-31, 2023)
+-- 2. For each date in the series, check if it exists in the user's device_activity_datelist
+-- 3. If the date exists, calculate its bit position: POW(2, 31 - days_from_end)
+--    - Day 31 (Jan 31) gets bit position 0 (rightmost): 2^0 = 1
+--    - Day 30 (Jan 30) gets bit position 1: 2^1 = 2
+--    - Day 1 (Jan 1) gets bit position 30: 2^30 = 1073741824
+-- 4. Sum all the bit values to create a single integer representing the entire month
+--
+-- Benefits of this encoding:
+--   - 32-bit integer represents 32 days of activity (1 month)
+--   - Much more storage efficient than storing arrays
+--   - Can use bitwise operations for fast analytics (BIT_COUNT for active days)
+--   - Easy to visualize activity patterns when converted to binary string
+--
+-- Output columns:
+--   - datelist_int: The compressed integer representation
+--   - datelist_int_binary: Binary string visualization (e.g., '10101010...')
+--   - cnt_active_days: Count of 1s in the binary (total active days)
 
 WITH users AS (SELECT *
                FROM user_devices_cumulated
