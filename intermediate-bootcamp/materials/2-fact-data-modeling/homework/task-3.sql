@@ -40,10 +40,10 @@ $$
 
                 SELECT COALESCE(t.user_id, y.user_id)                     AS user_id,
                        CASE
-                           WHEN y.device_activity IS NULL THEN ARRAY [t.date_active]
-                           WHEN t.date_active IS NULL THEN y.device_activity
-                           ELSE ARRAY [t.date_active] || y.device_activity
-                           END                                            AS device_activity,
+                           WHEN y.device_activity_datelist IS NULL THEN ARRAY [t.date_active]
+                           WHEN t.date_active IS NULL THEN y.device_activity_datelist
+                           ELSE ARRAY [t.date_active] || y.device_activity_datelist
+                           END                                            AS device_activity_datelist,
                        COALESCE(t.browser_type, y.browser_type)           AS browser_type,
                        COALESCE(t.date_active, y.date + INTERVAL '1 day') AS date
                 FROM today t
