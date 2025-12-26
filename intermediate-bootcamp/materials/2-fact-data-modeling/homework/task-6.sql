@@ -33,4 +33,5 @@ SELECT COALESCE(t.host, y.host)                           AS host,
        COALESCE(t.date_active, y.date + INTERVAL '1 day') AS date
 FROM today t
          FULL OUTER JOIN yesterday y
-                         ON t.host = y.host;
+                         ON t.host = y.host
+ON CONFLICT DO NOTHING;
