@@ -44,4 +44,5 @@ SELECT COALESCE(t.user_id, y.user_id)                     AS user_id,
 FROM today t
          FULL OUTER JOIN yesterday y
                          ON t.user_id = y.user_id
-                             AND t.browser_type = y.browser_type;
+                             AND t.browser_type = y.browser_type
+ON CONFLICT DO NOTHING;
