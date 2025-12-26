@@ -23,6 +23,6 @@ CREATE TABLE host_activity_reduced
     hit_metric             TEXT,
     hit_array              INTEGER[],
     unique_visitors_metric TEXT,
-    unique_visitors_array  NUMERIC[],
+    unique_visitors_array  INTEGER[],
     PRIMARY KEY (host, month_start, hit_metric, unique_visitors_metric)
 );
